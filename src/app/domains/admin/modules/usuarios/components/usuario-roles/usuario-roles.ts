@@ -1,11 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-usuario-roles',
-  imports: [MatCheckboxModule],
+  imports: [
+    MatCheckboxModule,
+    MatIconModule,
+  ],
   templateUrl: './usuario-roles.html',
-  styleUrl: './usuario-roles.css',
 })
 export class UsuarioRoles {
   @Input() rolesDisponibles: string[] = [];

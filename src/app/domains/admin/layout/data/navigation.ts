@@ -30,4 +30,17 @@ export const NAVIGATION: NavigationItem[] = [
       },
     ],
   },
+  {
+    id: 'administracion',
+    label: 'Administración',
+    children: [
+      {
+        id: 'administracion/usuarios',
+        label: 'Usuarios',
+        icon: 'users',
+        route: '/admin/usuarios',
+        roles: [AUTH_ROLES.ADMINISTRADOR],
+      },
+    ],
+  },
 ];

@@ -2,7 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { UsuarioEstatus } from '../../components/usuario-estatus/usuario-estatus';
@@ -16,7 +19,10 @@ import { UsuarioList } from '../../types/usuario.types';
     DatePipe,
     MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
     UsuarioEstatus,
   ],
 })
@@ -28,6 +34,10 @@ export default class UsuariosList implements OnInit {
   protected loading = signal(false);
   protected errorMessage = signal<string | null>(null);
   protected busqueda = signal('');
+
+  protected total = computed(() => this.usuarios().length);
+  protected activos = computed(() => this.usuarios().filter(x => x.activo).length);
+  protected inactivos = computed(() => this.usuarios().filter(x => !x.activo).length);
 
   protected usuariosFiltrados = computed(() => {
     const value = this.busqueda().trim().toLowerCase();
@@ -67,16 +77,10 @@ export default class UsuariosList implements OnInit {
 
   async cambiarEstatus(usuario: UsuarioList): Promise<void> {
     try {
-      await firstValueFrom(
-        this.service.updateStatus(usuario.id, !usuario.activo)
-      );
+      await firstValueFrom(this.service.updateStatus(usuario.id, !usuario.activo));
 
       this.usuarios.update(items =>
-        items.map(x =>
-          x.id === usuario.id
-            ? { ...x, activo: !x.activo }
-            : x
-        )
+        items.map(x => x.id === usuario.id ? { ...x, activo: !x.activo } : x)
       );
     } catch {
       this.errorMessage.set('No fue posible actualizar el estatus del usuario.');

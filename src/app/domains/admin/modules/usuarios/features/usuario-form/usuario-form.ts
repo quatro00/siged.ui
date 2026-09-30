@@ -3,7 +3,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AUTH_ROLES } from '@/app/domains/auth/constants/auth.roles';
@@ -11,15 +13,18 @@ import { UsuarioRoles } from '../../components/usuario-roles/usuario-roles';
 import { UsuariosService } from '../../services/usuarios.service';
 import { UsuarioCreate, UsuarioUpdate } from '../../types/usuario.types';
 
+
 @Component({
   selector: 'app-usuario-form',
   templateUrl: './usuario-form.html',
   imports: [
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    UsuarioRoles,
+     ReactiveFormsModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  UsuarioRoles,
   ],
 })
 export default class UsuarioForm implements OnInit {
