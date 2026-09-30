@@ -12,7 +12,7 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
-import { filter, take } from 'rxjs';
+import { filter } from 'rxjs';
 import {
   NAVIGATION,
   NavigationItem,
@@ -164,8 +164,8 @@ export class Navigation {
 
   protected navigationEnd = toSignal(
     this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      take(1)
+      filter((event) => event instanceof NavigationEnd)//,
+      //take(1)
     )
   );
 
