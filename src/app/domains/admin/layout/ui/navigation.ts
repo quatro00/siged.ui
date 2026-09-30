@@ -164,8 +164,7 @@ export class Navigation {
 
   protected navigationEnd = toSignal(
     this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd)//,
-      //take(1)
+      filter((event) => event instanceof NavigationEnd)
     )
   );
 

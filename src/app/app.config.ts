@@ -17,7 +17,6 @@ export const appConfig: ApplicationConfig = {
         authInterceptor,
       ])
     ),
-
     {
       provide: API_URL,
       useValue: apiConfig.baseUrl,
