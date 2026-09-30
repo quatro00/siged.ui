@@ -41,6 +41,13 @@ export const NAVIGATION: NavigationItem[] = [
         route: '/admin/usuarios',
         roles: [AUTH_ROLES.ADMINISTRADOR],
       },
+      {
+      id: 'administracion/areas',
+      label: 'Áreas',
+      icon: 'folder-kanban',
+      route: '/admin/areas',
+      roles: [AUTH_ROLES.ADMINISTRADOR],
+    },
     ],
   },
 ];
