@@ -1,0 +1,126 @@
+<div class="mx-auto flex w-full max-w-5xl flex-auto flex-col p-6 sm:p-8">
+  <div class="mb-6">
+    <div class="text-3xl font-bold tracking-tight">
+      {{ esEdicion ? 'Editar usuario' : 'Nuevo usuario' }}
+    </div>
+
+    <div class="mt-1 text-on-surface-variant">
+      {{ esEdicion
+        ? 'Modifica la información y permisos del usuario.'
+        : 'Registra un nuevo usuario para SIGED.' }}
+    </div>
+  </div>
+
+  <form
+    class="rounded-2xl border bg-surface p-6 sm:p-8"
+    [formGroup]="form"
+    (ngSubmit)="guardar()"
+  >
+    @if (errorMessage()) {
+      <div class="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre">
+        @if (form.controls.nombre.hasError('required')) {
+          <mat-error>El nombre es requerido.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Apellidos</mat-label>
+        <input matInput formControlName="apellidos">
+        @if (form.controls.apellidos.hasError('required')) {
+          <mat-error>Los apellidos son requeridos.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" formControlName="email">
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>El correo es requerido.</mat-error>
+        }
+        @if (form.controls.email.hasError('email')) {
+          <mat-error>Ingresa un correo válido.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (!esEdicion) {
+        <mat-form-field>
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" formControlName="password">
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>La contraseña es requerida.</mat-error>
+          }
+          @if (form.controls.password.hasError('minlength')) {
+            <mat-error>Debe contener al menos 6 caracteres.</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      <mat-form-field>
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Celular</mat-label>
+        <input matInput formControlName="celular">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>País</mat-label>
+        <input matInput formControlName="pais">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Código de país</mat-label>
+        <input matInput formControlName="codigoPais">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Empresa</mat-label>
+        <input matInput formControlName="empresa">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Dominio principal</mat-label>
+        <input matInput placeholder="empresa.com" formControlName="dominioPrincipal">
+      </mat-form-field>
+    </div>
+
+    <div class="mt-6 border-t pt-6">
+      <div class="mb-3 text-lg font-semibold">Roles</div>
+
+      <app-usuario-roles
+        [rolesDisponibles]="rolesDisponibles"
+        [seleccionados]="rolesSeleccionados()"
+        (seleccionadosChange)="cambiarRoles($event)"
+      />
+    </div>
+
+    <div class="mt-8 flex justify-end gap-3">
+      <button
+        type="button"
+        mat-button
+        [disabled]="loading()"
+        (click)="cancelar()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        mat-flat-button
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>

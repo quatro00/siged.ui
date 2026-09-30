@@ -1,0 +1,10 @@
+<div class="flex flex-col gap-2">
+  @for (rol of rolesDisponibles; track rol) {
+    <mat-checkbox
+      [checked]="estaSeleccionado(rol)"
+      (change)="cambiarRol(rol, $event.checked)"
+    >
+      {{ rol }}
+    </mat-checkbox>
+  }
+</div>
