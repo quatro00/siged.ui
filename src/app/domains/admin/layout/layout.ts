@@ -7,11 +7,13 @@ import {
   MatSidenavContainer,
   MatSidenavContent,
 } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterOutlet } from '@angular/router';
 import { Media } from '@/app/core/media';
 import { AuthService } from '@/app/domains/auth/services/auth.services';
 import { SchemeSwitcher } from './ui/scheme-switcher';
 import { AdminSidebar } from './ui/sidebar';
+
 
 @Component({
   selector: 'admin-layout',
@@ -21,6 +23,7 @@ import { AdminSidebar } from './ui/sidebar';
     MatMenuModule,
     RouterOutlet,
     MatSidenavContainer,
+    MatTooltipModule,
     MatSidenav,
     MatSidenavContent,
     AdminSidebar,
@@ -60,51 +63,51 @@ import { AdminSidebar } from './ui/sidebar';
         
 
           <button
-  matIconButton
-  [matMenuTriggerFor]="userMenu"
-  matTooltip="Cuenta"
->
-  <mat-icon svgIcon="circle-user-round" />
-</button>
+            matIconButton
+            [matMenuTriggerFor]="userMenu"
+            matTooltip="Cuenta"
+          >
+            <mat-icon svgIcon="circle-user-round" />
+          </button>
 
-<mat-menu #userMenu>
-  <div class="min-w-64 px-4 py-3">
-    <div class="flex items-center gap-3">
-      <div
-        class="flex size-10 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary"
-      >
-        {{ iniciales() }}
-      </div>
+          <mat-menu #userMenu>
+            <div class="min-w-64 px-4 py-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex size-10 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary"
+                >
+                  {{ iniciales() }}
+                </div>
 
-      <div class="min-w-0">
-        <div class="truncate font-semibold">
-          {{ authService.user()?.name }}
-        </div>
+                <div class="min-w-0">
+                  <div class="truncate font-semibold">
+                    {{ authService.user()?.name }}
+                  </div>
 
-        <div class="truncate text-xs text-on-surface-variant">
-          {{ authService.user()?.email }}
-        </div>
-      </div>
-    </div>
+                  <div class="truncate text-xs text-on-surface-variant">
+                    {{ authService.user()?.email }}
+                  </div>
+                </div>
+              </div>
 
-    <div class="mt-3 flex flex-wrap gap-1">
-      @for (rol of authService.user()?.roles ?? []; track rol) {
-        <span
-          class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
-        >
-          {{ rol }}
-        </span>
-      }
-    </div>
-  </div>
+              <div class="mt-3 flex flex-wrap gap-1">
+                @for (rol of authService.user()?.roles ?? []; track rol) {
+                  <span
+                    class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                  >
+                    {{ rol }}
+                  </span>
+                }
+              </div>
+            </div>
 
-  <div class="my-1 border-t"></div>
+            <div class="my-1 border-t"></div>
 
-  <button mat-menu-item (click)="logout()">
-    <mat-icon svgIcon="log-out" />
-    <span>Cerrar sesión</span>
-  </button>
-</mat-menu>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon svgIcon="log-out" />
+              <span>Cerrar sesión</span>
+            </button>
+          </mat-menu>
         </div>
 
         <div
