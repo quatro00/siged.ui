@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { API_URL } from '@/app/core/config/api.config';
 import { LocalStorage } from '@/app/core/local-storage';
@@ -22,12 +22,13 @@ export class AuthService {
 
     readonly user = signal<AuthUser | null>(this.getStoredUser());
 
-    readonly isAuthenticated = computed(
-        () =>
+    isAuthenticated(): boolean {
+        return (
             !!this.accessToken &&
             !!this.user() &&
             !this.isTokenExpired()
-    );
+        );
+    }
 
     login(request: LoginRequest): Observable<LoginResponse> {
         return this.http
@@ -54,11 +55,24 @@ export class AuthService {
         }
 
         try {
-            const payload = JSON.parse(
-                atob(token.split('.')[1])
+            const payloadPart = token.split('.')[1];
+
+            if (!payloadPart) {
+                return true;
+            }
+
+            const base64 = payloadPart
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            const padded = base64.padEnd(
+                Math.ceil(base64.length / 4) * 4,
+                '='
             );
 
-            if (!payload.exp) {
+            const payload = JSON.parse(atob(padded));
+
+            if (typeof payload.exp !== 'number') {
                 return true;
             }
 

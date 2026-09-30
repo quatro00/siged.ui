@@ -1,7 +1,7 @@
 import { Tree, TreeItem, TreeItemGroup } from '@angular/aria/tree';
 import { CdkMonitorFocus } from '@angular/cdk/a11y';
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -17,6 +17,7 @@ import {
   NAVIGATION,
   NavigationItem,
 } from '@/app/domains/admin/layout/data/navigation';
+import { AuthService } from '@/app/domains/auth/services/auth.services';
 
 @Component({
   selector: 'navigation',
@@ -34,6 +35,7 @@ import {
     <div class="flex flex-col gap-y-4">
       @for (section of navigation(); track section.id) {
         <div class="flex flex-col px-4">
+
           <!-- Section title -->
           <div class="px-2.5 py-1.5 text-sm font-semibold text-blue-400">
             {{ section.label }}
@@ -85,7 +87,6 @@ import {
                   node.activeOptions ?? { exact: true }
                 "
                 (click)="$event.preventDefault()"
-                #rla="routerLinkActive"
                 #treeItem="ngTreeItem"
               >
                 <!-- Icon -->
@@ -158,11 +159,9 @@ import {
   `,
 })
 export class Navigation {
-  // Dependencies
   private router = inject(Router);
+  private authService = inject(AuthService);
 
-  // State
-  protected navigation = signal<NavigationItem[]>(NAVIGATION);
   protected navigationEnd = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -170,52 +169,109 @@ export class Navigation {
     )
   );
 
-  constructor() {
-    // Expand active route on initial load
-    effect(() => {
-      const navigationEnd = this.navigationEnd();
-      if (!navigationEnd) {
-        return;
+  protected navigation = computed(() => {
+    const items = this.filterNavigation(NAVIGATION);
+
+    const navigationEnd = this.navigationEnd();
+
+    if (!navigationEnd) {
+      return items;
+    }
+
+    return this.expandActiveRoute(items);
+  });
+
+  /**
+   * Filtra el menú de acuerdo con los roles
+   * del usuario autenticado.
+   */
+  private filterNavigation(
+    items: NavigationItem[]
+  ): NavigationItem[] {
+    return items.flatMap((item) => {
+      if (
+        item.roles?.length &&
+        !this.authService.hasAnyRole(item.roles)
+      ) {
+        return [];
       }
 
-      this.navigation.set(this.expandActiveRoute(this.navigation()));
+      const children = item.children
+        ? this.filterNavigation(item.children)
+        : undefined;
+
+      // Si es únicamente una sección/contenedor y después
+      // de filtrar ya no tiene hijos, tampoco se muestra.
+      if (
+        item.children &&
+        !children?.length &&
+        !item.route
+      ) {
+        return [];
+      }
+
+      return [
+        {
+          ...item,
+          children,
+        },
+      ];
     });
   }
 
   /**
-   * Expand all parent routes of the active route.
-   * @param items
+   * Expande automáticamente los padres
+   * de la ruta actualmente activa.
    */
-  expandActiveRoute(items: NavigationItem[]): NavigationItem[] {
-    for (const item of items) {
-      if (item.children?.length) {
-        item.children = this.expandActiveRoute(item.children);
+  private expandActiveRoute(
+    items: NavigationItem[]
+  ): NavigationItem[] {
+    return items.map((item) => {
+      const current: NavigationItem = {
+        ...item,
+      };
 
-        if (item.children.some((child) => child.expanded)) {
-          item.expanded = true;
+      if (current.children?.length) {
+        current.children = this.expandActiveRoute(
+          current.children
+        );
+
+        if (
+          current.children.some(
+            (child) => child.expanded
+          )
+        ) {
+          current.expanded = true;
         }
       }
 
       if (
-        item.route &&
+        current.route &&
         isActive(
-          item.route,
+          current.route,
           this.router,
-          this.isActiveOption(item.activeOptions ?? { exact: true })
+          this.isActiveOption(
+            current.activeOptions ?? {
+              exact: true,
+            }
+          )
         )()
       ) {
-        item.expanded = true;
+        current.expanded = true;
       }
-    }
-    return items;
+
+      return current;
+    });
   }
 
   /**
-   * Convert simple exact option to full IsActiveMatchOptions.
-   * @param options
+   * Convierte la configuración simple de exact
+   * al formato completo de Angular Router.
    */
-  isActiveOption(
-    options: { exact: boolean } | IsActiveMatchOptions
+  private isActiveOption(
+    options:
+      | { exact: boolean }
+      | IsActiveMatchOptions
   ): IsActiveMatchOptions {
     if ('exact' in options) {
       return options.exact
