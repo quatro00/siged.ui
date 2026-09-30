@@ -6,15 +6,34 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from 
 import { provideIcons } from '@/app/core/icons/provider';
 import { provideTheming } from '@/app/core/theming';
 import { routes } from './app.routes';
+import { API_URL, apiConfig } from './core/config/api.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
-    provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+
+    { provide: API_URL, useValue: apiConfig.baseUrl },
+
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+      })
+    ),
+
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { subscriptSizing: 'dynamic' },
+    },
+
     provideNativeDateAdapter(),
     provideIcons(),
-    provideTheming({ scheme: 'system', primary: '#1565C0', error: '#dc2626' }),
+    provideTheming({
+      scheme: 'system',
+      primary: '#1565C0',
+      error: '#dc2626',
+    }),
   ],
 };
