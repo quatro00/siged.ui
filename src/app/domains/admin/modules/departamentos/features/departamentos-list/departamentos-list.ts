@@ -11,8 +11,8 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AreasService } from '../../../areas/services/areas.services';
 import { AreaList } from '../../../areas/types/area.types';
-import { DepartamentosService } from '../../../services/departamentos.services';
 import { DepartamentoEstatusComponent } from '../../components/departamento-estatus/departamento-estatus';
+import { DepartamentosService } from '../../services/departamentos.services';
 import { DepartamentoList } from '../../types/departamento.types';
 
 @Component({

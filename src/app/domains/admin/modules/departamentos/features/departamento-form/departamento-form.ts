@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AreasService } from '../../../areas/services/areas.services';
 import { AreaList } from '../../../areas/types/area.types';
-import { DepartamentosService } from '../../../services/departamentos.services';
+import { DepartamentosService } from '../../services/departamentos.services';
 import {
   DepartamentoCreate,
   DepartamentoUpdate,

@@ -2,8 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '@/app/core/config/api.config';
-import { DepartamentoEstatusComponent } from '../departamentos/components/departamento-estatus/departamento-estatus';
-import { DepartamentoCreate, DepartamentoDetalle, DepartamentoList, DepartamentoUpdate } from '../departamentos/types/departamento.types';
+import { DepartamentoCreate, DepartamentoDetalle, DepartamentoEstatus, DepartamentoList, DepartamentoUpdate } from '../../departamentos/types/departamento.types';
 
 
 @Injectable({
@@ -37,7 +36,11 @@ export class DepartamentosService {
   }
 
   updateStatus(id: string, activo: boolean): Observable<{ message: string }> {
-    const dto: DepartamentoEstatusComponent = { activo };
-    return this.http.patch<{ message: string }>(`${this.endpoint}/${id}/estatus`, dto);
+    const dto: DepartamentoEstatus = { activo };
+
+    return this.http.patch<{ message: string }>(
+      `${this.endpoint}/${id}/estatus`,
+      dto
+    );
   }
 }
